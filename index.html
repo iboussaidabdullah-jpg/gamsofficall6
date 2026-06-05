@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Turbo Racing</title>
+
+<style>
+body{
+ margin:0;
+ overflow:hidden;
+ background:#222;
+ font-family:Arial;
+}
+
+#game{
+ width:400px;
+ height:700px;
+ margin:auto;
+ background:#555;
+ position:relative;
+ overflow:hidden;
+}
+
+#road{
+ width:200px;
+ height:100%;
+ background:#222;
+ position:absolute;
+ left:100px;
+}
+
+#car{
+ width:45px;
+ height:80px;
+ background:red;
+ position:absolute;
+ bottom:50px;
+ left:175px;
+ border-radius:10px;
+}
+
+.enemy{
+ width:45px;
+ height:80px;
+ background:blue;
+ position:absolute;
+ top:-100px;
+ border-radius:10px;
+}
+
+.coin{
+ width:25px;
+ height:25px;
+ background:gold;
+ border-radius:50%;
+ position:absolute;
+ top:-50px;
+}
+
+#score{
+ color:white;
+ font-size:25px;
+ text-align:center;
+}
+</style>
+
+</head>
+
+
+<body>
+
+<div id="score">
+Score: 0
+</div>
+
+<div id="game">
+
+<div id="road"></div>
+
+<div id="car"></div>
+
+</div>
+
+
+<script>
+
+let car=document.getElementById("car");
+let game=document.getElementById("game");
+
+let score=0;
+let speed=5;
+
+let x=175;
+
+
+document.addEventListener("keydown",e=>{
+
+if(e.key=="ArrowLeft" && x>110)
+ x-=20;
+
+if(e.key=="ArrowRight" && x<245)
+ x+=20;
+
+car.style.left=x+"px";
+
+});
+
+
+// صنع الخصوم
+
+setInterval(()=>{
+
+let enemy=document.createElement("div");
+
+enemy.className="enemy";
+
+enemy.style.left=(120+Math.random()*120)+"px";
+
+game.appendChild(enemy);
+
+
+
+let move=setInterval(()=>{
+
+let y=parseInt(enemy.style.top || -100);
+
+enemy.style.top=y+speed+"px";
+
+
+// اصطدام
+
+if(
+ enemy.offsetTop>570 &&
+ Math.abs(enemy.offsetLeft-x)<40
+){
+
+alert("Game Over Score: "+score);
+location.reload();
+
+}
+
+
+
+if(y>700){
+enemy.remove();
+clearInterval(move);
+score++;
+document.getElementById("score").innerHTML=
+"Score: "+score;
+}
+
+
+},30);
+
+
+},1500);
+
+
+
+// النقود
+
+setInterval(()=>{
+
+let c=document.createElement("div");
+
+c.className="coin";
+
+c.style.left=(130+Math.random()*100)+"px";
+
+game.appendChild(c);
+
+
+let m=setInterval(()=>{
+
+let y=parseInt(c.style.top || -50);
+
+c.style.top=y+speed+"px";
+
+
+if(
+c.offsetTop>570 &&
+Math.abs(c.offsetLeft-x)<40
+){
+score+=5;
+c.remove();
+clearInterval(m);
+}
+
+
+if(y>700){
+c.remove();
+clearInterval(m);
+}
+
+},30);
+
+
+},2500);
+
+
+</script>
+
+</body>
+</html>
